@@ -90,17 +90,17 @@ app.use("/api/detail-sale", detailSaleRoute);
 app.use("/api/device-connection", localToDeviceRoute);
 app.use("/api/device", deviceRoute);
 
-// app.use("/api/customer", coustomerRoute);
-// app.use("/api/debt", debtRoute);
-
 app.use("/api/daily-report", dailyReportRoute);
 app.use("/api/fuel-balance", fuelBalanceRoute);
 app.use("/api/fuelIn", fuelInRoute);
 
 app.use("/api/daily-price", dailyPriceRoute);
-app.use("/api/initial-setup", initialSetupRoute);
 
 app.use("/api/test", localToDeviceRoute);
+
+// app.use("/api/customer", coustomerRoute);
+// app.use("/api/debt", debtRoute);
+// app.use("/api/initial-setup", initialSetupRoute);
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   err.status = err.status || 409;

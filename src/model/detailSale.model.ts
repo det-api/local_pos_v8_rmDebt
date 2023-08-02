@@ -28,7 +28,7 @@ const detailSaleSchema = new Schema({
     required: true,
     ref: "stationDetail",
   },
-  vocono: { type: String, required: true, unique: true },
+  vocono: { type: String, required: true },
   carNo: { type: String, required: true },
   vehicleType: { type: String, required: true },
   nozzleNo: { type: String, required: true },

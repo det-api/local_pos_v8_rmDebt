@@ -1,4 +1,4 @@
-import {
+ import {
   addDailyPriceHandler,
   deleteDailyPriceHandler,
   getDailyPriceHandler,
@@ -20,7 +20,7 @@ dailyPriceRoute.get(
 dailyPriceRoute.post(
   "/",
   validateToken,
-  roleValidator(["manager", "admin"]),
+  roleValidator(["manager"]),
   hasAnyPermit(["add"]),
   addDailyPriceHandler
 );

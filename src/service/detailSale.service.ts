@@ -55,13 +55,20 @@ export const preSetDetailSale = async (
 
   const options = { timeZone: "Asia/Yangon", hour12: false };
 
-  const currentDateTime = new Date().toLocaleTimeString("en-US", options);
+  let currentDateTime = new Date().toLocaleTimeString("en-US", options);
+
+  const [hour, minute, second] = currentDateTime.split(":").map(Number);
+
+  if (hour == 24) {
+    currentDateTime = `00:${minute}:${second}`;
+  }
 
   let iso: Date = new Date(`${currentDate}T${currentDateTime}.000Z`);
 
   const count = await detailSaleModel.countDocuments({
     dailyReportDate: currentDate,
   });
+
 
   body = {
     ...body,
@@ -78,12 +85,20 @@ export const preSetDetailSale = async (
     .findOne({ nozzleNo: body.nozzleNo })
     .sort({ _id: -1, createAt: -1 });
 
+  // if (
+  //   lastDocument?.saleLiter == 0 ||
+  //   lastDocument?.vehicleType == null ||
+  //   lastDocument?.totalPrice == 0
+  // ) {
+  //   throw new Error(`${lastDocument?.vocono}`);
+  // }
+
   if (
-    lastDocument?.saleLiter == 0 ||
-    lastDocument?.vehicleType == null ||
-    lastDocument?.totalPrice == 0
+    lastDocument?.saleLiter == 0 &&
+    lastDocument?.asyncAlready == "0"
   ) {
-    throw new Error(`${lastDocument?.vocono}`);
+    // throw new Error(`${lastDocument?.vocono}`);
+    await detailSaleModel.findByIdAndDelete(lastDocument?._id);
   }
 
   let result = await new detailSaleModel(body).save();
@@ -160,7 +175,13 @@ export const addDetailSale = async (
 
     const options = { timeZone: "Asia/Yangon", hour12: false };
 
-    const currentDateTime = new Date().toLocaleTimeString("en-US", options);
+    let currentDateTime = new Date().toLocaleTimeString("en-US", options);
+
+    const [hour, minute, second] = currentDateTime.split(":").map(Number);
+
+    if (hour == 24) {
+      currentDateTime = `00:${minute}:${second}`;
+    }
 
     let iso: Date = new Date(`${currentDate}T${currentDateTime}.000Z`);
 
@@ -182,12 +203,14 @@ export const addDetailSale = async (
     const lastDocument = await detailSaleModel
       .findOne({ nozzleNo: body.nozzleNo })
       .sort({ _id: -1, createAt: -1 });
+
+
     if (
-      lastDocument?.saleLiter == 0 ||
-      lastDocument?.vehicleType == null ||
-      lastDocument?.totalPrice == 0
+      lastDocument?.saleLiter == 0 &&
+      lastDocument?.asyncAlready == "0"
     ) {
-      throw new Error(`${lastDocument?.vocono}`);
+      // throw new Error(`${lastDocument?.vocono}`);
+      await detailSaleModel.findByIdAndDelete(lastDocument?._id);
     }
 
     let result = await new detailSaleModel(body).save();
