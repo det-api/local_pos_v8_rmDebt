@@ -16,4 +16,12 @@ const blinkLed = async (ledNo: number) => {
   }
 };
 
+export const lowLed = async () => {
+  arr.map((ea) => {
+    let LED = new Gpio(ea, "out");
+
+    LED.writeSync(0);
+  });
+};
+
 export default blinkLed;

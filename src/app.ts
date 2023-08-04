@@ -16,7 +16,7 @@ import { liveDataChangeHandler } from "./connection/liveTimeData";
 import { detailSaleUpdateByDevice } from "./service/detailSale.service";
 import dailyPriceRoute from "./router/dailyPrice.routes";
 import dbConnect, { client, connect } from "./utils/connect";
-import blinkLed from "./connection/ledBlink";
+import blinkLed, { lowLed } from "./connection/ledBlink";
 import initialSetupRoute from "./router/initialSetup.routes";
 
 const app = express();
@@ -109,6 +109,8 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
     msg: err.message,
   });
 });
+
+lowLed();
 
 server.listen(port, () =>
   console.log(`server is running in  http://${host}:${port}`)
