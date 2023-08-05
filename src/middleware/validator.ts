@@ -42,11 +42,16 @@ export const validateToken2 = async (
 ) => {
   try {
     let token = req.headers.authorization?.split(" ")[1];
+    console.log("wk");
+
     if (!token) {
       return next(new Error("invalid token"));
     }
     let decoded = checkToken(token);
+    // console.log(decoded);
+    req.body = req.body || {};
     req.body.user = [decoded];
+    // console.log(req.body.user);
     next();
   } catch (e) {
     next(new Error(e));

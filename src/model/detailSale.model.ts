@@ -19,6 +19,8 @@ export interface detailSaleDocument extends mongoose.Document {
   totalPrice: number;
   totalizer_liter: number;
   isError: boolean;
+  preset: string;
+  device: string;
   createAt: Date;
 }
 
@@ -58,6 +60,8 @@ const detailSaleSchema = new Schema({
     default: new Date().toLocaleDateString("fr-CA"),
   },
   isError: { type: Boolean, default: false },
+  preset: { type: String, default: null },
+  device: { type: String, required: true },
   createAt: { type: Date, default: Date.now },
 });
 

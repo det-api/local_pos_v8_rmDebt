@@ -6,12 +6,21 @@ import {
   roleRemovePermitHandler,
 } from "../controller/role.controller";
 import { roleValidator } from "../middleware/roleValidator";
-import { validateAll, validateToken } from "../middleware/validator";
+import {
+  validateAll,
+  validateToken,
+  validateToken2,
+} from "../middleware/validator";
 import { allSchemaId, rolePermitSchema, roleSchema } from "../schema/schema";
 
 const roleRoute = require("express").Router();
 
-roleRoute.get("/", validateToken, roleValidator(["admin"]), getRoleHandler);
+roleRoute.get(
+  "/",
+  validateToken2,
+  roleValidator(["admin", "installer"]),
+  getRoleHandler
+);
 
 roleRoute.post(
   "/",

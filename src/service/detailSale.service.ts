@@ -78,6 +78,7 @@ export const preSetDetailSale = async (
     stationDetailId: body.user[0].stationId,
     casherCode: body.user[0].name,
     asyncAlready: "0",
+    preset : `${preset} ${type}`,
     createAt: iso,
   };
 
@@ -93,72 +94,72 @@ export const preSetDetailSale = async (
   //   throw new Error(`${lastDocument?.vocono}`);
   // }
 
-  if (
-    lastDocument?.saleLiter == 0 &&
-    lastDocument?.asyncAlready == "0"
-  ) {
-    // throw new Error(`${lastDocument?.vocono}`);
-    await detailSaleModel.findByIdAndDelete(lastDocument?._id);
-  }
+  // if (
+  //   lastDocument?.saleLiter == 0 &&
+  //   lastDocument?.asyncAlready == "0"
+  // ) {
+  //   // throw new Error(`${lastDocument?.vocono}`);
+  //   await detailSaleModel.findByIdAndDelete(lastDocument?._id);
+  // }
 
   let result = await new detailSaleModel(body).save();
 
-  // let checkDate = await getFuelBalance({
-  //   stationId: result.stationDetailId,
-  //   createAt: result.dailyReportDate,
-  // });
+  let checkDate = await getFuelBalance({
+    stationId: result.stationDetailId,
+    createAt: result.dailyReportDate,
+  });
 
-  // let checkRpDate = await getDailyReport({
-  //   stationId: result.stationDetailId,
-  //   dateOfDay: result.dailyReportDate,
-  // });
+  let checkRpDate = await getDailyReport({
+    stationId: result.stationDetailId,
+    dateOfDay: result.dailyReportDate,
+  });
 
-  // if (checkRpDate.length == 0) {
-  //   await addDailyReport({
-  //     stationId: result.stationDetailId,
-  //     dateOfDay: result.dailyReportDate,
-  //   });
-  // }
+  if (checkRpDate.length == 0) {
+    await addDailyReport({
+      stationId: result.stationDetailId,
+      dateOfDay: result.dailyReportDate,
+    });
+  }
 
-  // if (checkDate.length == 0) {
-  //   let prevDate = previous(new Date(result.dailyReportDate));
+  if (checkDate.length == 0) {
+    let prevDate = previous(new Date(result.dailyReportDate));
 
-  //   let prevResult = await getFuelBalance({
-  //     stationId: result.stationDetailId,
-  //     createAt: prevDate,
-  //   });
+    let prevResult = await getFuelBalance({
+      stationId: result.stationDetailId,
+      createAt: prevDate,
+    });
 
-  //   await Promise.all(
-  //     prevResult.map(async (ea) => {
-  //       let obj: fuelBalanceDocument;
-  //       if (ea.balance == 0) {
-  //         obj = {
-  //           stationId: ea.stationId,
-  //           fuelType: ea.fuelType,
-  //           capacity: ea.capacity,
-  //           opening: ea.opening + ea.fuelIn,
-  //           tankNo: ea.tankNo,
-  //           createAt: result?.dailyReportDate,
-  //           nozzles: ea.nozzles,
-  //           balance: ea.opening + ea.fuelIn,
-  //         } as fuelBalanceDocument;
-  //       } else {
-  //         obj = {
-  //           stationId: ea.stationId,
-  //           fuelType: ea.fuelType,
-  //           capacity: ea.capacity,
-  //           opening: ea.opening + ea.fuelIn - ea.cash,
-  //           tankNo: ea.tankNo,
-  //           createAt: result?.dailyReportDate,
-  //           nozzles: ea.nozzles,
-  //           balance: ea.opening + ea.fuelIn - ea.cash,
-  //         } as fuelBalanceDocument;
-  //       }
+    await Promise.all(
+      prevResult.map(async (ea) => {
+        let obj: fuelBalanceDocument;
+        if (ea.balance == 0) {
+          obj = {
+            stationId: ea.stationId,
+            fuelType: ea.fuelType,
+            capacity: ea.capacity,
+            opening: ea.opening + ea.fuelIn,
+            tankNo: ea.tankNo,
+            createAt: result?.dailyReportDate,
+            nozzles: ea.nozzles,
+            balance: ea.opening + ea.fuelIn,
+          } as fuelBalanceDocument;
+        } else {
+          obj = {
+            stationId: ea.stationId,
+            fuelType: ea.fuelType,
+            capacity: ea.capacity,
+            opening: ea.opening + ea.fuelIn - ea.cash,
+            tankNo: ea.tankNo,
+            createAt: result?.dailyReportDate,
+            nozzles: ea.nozzles,
+            balance: ea.opening + ea.fuelIn - ea.cash,
+          } as fuelBalanceDocument;
+        }
 
-  //       await addFuelBalance(obj);
-  //     })
-  //   );
-  // }
+        await addFuelBalance(obj);
+      })
+    );
+  }
 
   mqttEmitter(`detpos/local_server/preset`, nozzleNo + type + preset);
   return result;
@@ -205,13 +206,13 @@ export const addDetailSale = async (
       .sort({ _id: -1, createAt: -1 });
 
 
-    if (
-      lastDocument?.saleLiter == 0 &&
-      lastDocument?.asyncAlready == "0"
-    ) {
-      // throw new Error(`${lastDocument?.vocono}`);
-      await detailSaleModel.findByIdAndDelete(lastDocument?._id);
-    }
+    // if (
+    //   lastDocument?.saleLiter == 0 &&
+    //   lastDocument?.asyncAlready == "0"
+    // ) {
+    //   // throw new Error(`${lastDocument?.vocono}`);
+    //   await detailSaleModel.findByIdAndDelete(lastDocument?._id);
+    // }
 
     let result = await new detailSaleModel(body).save();
 
@@ -358,15 +359,15 @@ export const detailSaleUpdateByDevice = async (topic: string, message) => {
       return;
     }
 
-    if (
-      saleLiter == 0 ||
-      (saleLiter == null && data[2] == 0) ||
-      data[2] == ""
-    ) {
-      await detailSaleModel.findByIdAndDelete(lastData[0]?._id);
-      mqttEmitter("detpos/local_server", `${lastData[0]?.nozzleNo}/D1S1`);
-      return;
-    }
+    // if (
+    //   saleLiter == 0 ||
+    //   (saleLiter == null && data[2] == 0) ||
+    //   data[2] == ""
+    // ) {
+    //   await detailSaleModel.findByIdAndDelete(lastData[0]?._id);
+    //   mqttEmitter("detpos/local_server", `${lastData[0]?.nozzleNo}/D1S1`);
+    //   return;
+    // }
 
     let updateBody: UpdateQuery<detailSaleDocument> = {
       nozzleNo: data[0],
@@ -504,7 +505,7 @@ export const getDetailSaleByFuelType = async (
 
   let fuelLiter = fuel
     .map((ea) => ea["saleLiter"])
-    .reduce((pv: number, cv: number): number => pv + cv, 0);
+    .reduce((pv: number, cv: number): number => pv + cv, 0); 
   let fuelAmount = fuel
     .map((ea) => ea["totalPrice"])
     .reduce((pv: number, cv: number): number => pv + cv, 0);

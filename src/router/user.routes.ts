@@ -1,11 +1,13 @@
 const userRoute = require("express").Router();
 import { hasAnyPermit } from "../middleware/permitValidator";
 import { roleValidator } from "../middleware/roleValidator";
+
 import {
   validateAll,
   validateToken,
   validateToken2,
 } from "../middleware/validator";
+
 import {
   deleteUserHandler,
   getUserByAdminHandler,
@@ -18,6 +20,7 @@ import {
   userRemovePermitHandler,
   userRemoveRoleHandler,
 } from "../controller/user.controller";
+
 import {
   createUserSchema,
   loginUserSchema,
@@ -71,9 +74,9 @@ userRoute.get(
 //adding role in user
 userRoute.patch(
   "/add/role",
-  validateToken,
+  validateToken2,
   validateAll(userRoleSchema),
-  roleValidator(["admin"]),
+  roleValidator(["admin", "installer"]),
   hasAnyPermit(["add"]),
   userAddRoleHandler
 );
@@ -90,12 +93,13 @@ userRoute.patch(
 //adding permit in user
 userRoute.patch(
   "/add/permit",
-  validateToken,
+  validateToken2,
   validateAll(userPermitSchema),
-  roleValidator(["admin"]),
+  roleValidator(["admin", "installer"]),
   hasAnyPermit(["add"]),
   userAddPermitHandler
 );
+
 userRoute.patch(
   "/remove/permit",
   validateToken,
