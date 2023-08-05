@@ -119,6 +119,7 @@ export const preSetDetailSale = async (
       stationId: result.stationDetailId,
       dateOfDay: result.dailyReportDate,
     });
+  
   }
 
   if (checkDate.length == 0) {
@@ -128,6 +129,8 @@ export const preSetDetailSale = async (
       stationId: result.stationDetailId,
       createAt: prevDate,
     });
+
+
 
     await Promise.all(
       prevResult.map(async (ea) => {
@@ -457,6 +460,26 @@ export const detailSaleUpdateByDevice = async (topic: string, message) => {
       result.nozzleNo
     );
 
+    let prevDate = previous(new Date(result.dailyReportDate));
+
+    let checkErrorData = await detailSaleModel.find({asyncAlready: 0 , dailyReportDate : prevDate })
+    if(checkErrorData.length > 0){
+      for (const ea of checkErrorData) {
+        try {
+          let url = config.get<string>("detailsaleCloudUrl");
+          let response = await axios.post(url, ea);
+          if (response.status == 200) {
+            await detailSaleModel.findByIdAndUpdate(ea._id, {
+              asyncAlready: "2",
+            });
+          }
+        } catch (error) {
+          if (error.response && error.response.status === 409) {
+          } else {
+          }
+        }
+      }
+    }
     let finalData = await detailSaleModel.find({ asyncAlready: 1 });
     for (const ea of finalData) {
       try {
