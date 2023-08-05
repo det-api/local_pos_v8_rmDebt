@@ -14,7 +14,7 @@ export const compass = (payload: string, dbPass: string) =>
 
 //tokenization
 export const createToken = (payload: {}) =>
-  jwt.sign(payload, secretKey, { expiresIn: "12h" });
+  jwt.sign(payload, secretKey, { expiresIn: "24h" });
 export const checkToken = (payload: string): any =>
   jwt.verify(payload, secretKey);
 
