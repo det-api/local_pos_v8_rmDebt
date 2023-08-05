@@ -73,7 +73,6 @@ export const getUserByAdminHandler = async (
   next: NextFunction
 ) => {
   try {
-    req.query = { _id: "64a51b27845f3bad2f675822" };
     let result = await getUser(req.query);
     fMsg(res, "registered users", result);
   } catch (e) {

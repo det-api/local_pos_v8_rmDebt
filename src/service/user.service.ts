@@ -137,3 +137,16 @@ export const userRemovePermit = async (
     throw new Error(e);
   }
 };
+
+export const addNewUser = async (payload: UserDocument) => {
+  // console.log(payload.name)
+  let user = await userModel.findOne({ name: payload.name });
+  if (user) {
+    return "user already exist";
+  }
+  try {
+    return await new userModel(payload).save();
+  } catch (e: any) {
+    return new Error(e);
+  }
+};

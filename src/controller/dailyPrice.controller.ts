@@ -54,7 +54,7 @@ export const addDailyPriceHandler = async (
       setTimeout(() => {
         mqttEmitter(
           "detpos/local_server/price",
-          `${ea.nozzle_no}${ea.daily_price}`
+          `${ea.nozzle_no}${ea.daily_price.toString().padStart(4, "0")}`
         );
       }, 1000 * (index + 1));
     });

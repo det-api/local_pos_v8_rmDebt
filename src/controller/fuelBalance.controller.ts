@@ -61,10 +61,10 @@ export const addFuelBalanceHandler = async (
   next: NextFunction
 ) => {
   try {
-    req.body = {
-      ...req.body,
-      stationId: req.body.user[0].stationId,
-    };
+    // req.body = {
+    //   ...req.body,
+    //   stationId: req.body.user[0].stationId,
+    // };
 
     let result = await addFuelBalance(req.body);
     fMsg(res, "New fuelBalance data was added", result);

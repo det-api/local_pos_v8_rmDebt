@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import fMsg from "../utils/helper";
-import { addDevice, deleteDevice, getDevice } from "../service/device.service";
+import {
+  addDevice,
+  countDevice,
+  deleteDevice,
+  getDevice,
+} from "../service/device.service";
 
 export const getDeviceHandler = async (
   req: Request,
@@ -22,6 +27,10 @@ export const addDeviceHandler = async (
   next: NextFunction
 ) => {
   try {
+    let noOfCount = await countDevice();
+    if (noOfCount == 32) {
+      throw new Error("only 32 nozzle can access");
+    }
     let result = await addDevice(req.body);
     fMsg(res, "New Device was added", result);
   } catch (e) {

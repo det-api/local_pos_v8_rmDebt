@@ -1,7 +1,11 @@
 const userRoute = require("express").Router();
 import { hasAnyPermit } from "../middleware/permitValidator";
 import { roleValidator } from "../middleware/roleValidator";
-import { validateAll, validateToken } from "../middleware/validator";
+import {
+  validateAll,
+  validateToken,
+  validateToken2,
+} from "../middleware/validator";
 import {
   deleteUserHandler,
   getUserByAdminHandler,
@@ -59,8 +63,8 @@ userRoute.delete(
 
 userRoute.get(
   "/admin",
-  validateToken,
-  roleValidator(["admin"]),
+  validateToken2,
+  roleValidator(["admin", "installer"]),
   getUserByAdminHandler
 );
 

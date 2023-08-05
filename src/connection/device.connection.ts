@@ -33,6 +33,6 @@ export const connectingFunction = async () => {
         resolve(conditon);
         false;
       }
-    }, 10000);
+    }, 2000);
   });
 };

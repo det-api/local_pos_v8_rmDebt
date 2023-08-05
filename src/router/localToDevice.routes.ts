@@ -1,7 +1,6 @@
 import {
   connectDeviceHandler,
   devicePermitHandler,
-  updateByDeviceHandler,
 } from "../controller/localToDevice.controller";
 import { hasAnyPermit } from "../middleware/permitValidator";
 import { validateToken } from "../middleware/validator";
@@ -21,6 +20,6 @@ localToDeviceRoute.post(
   devicePermitHandler
 );
 
-localToDeviceRoute.post("/", updateByDeviceHandler);
+// localToDeviceRoute.post("/", updateByDeviceHandler);
 
 export default localToDeviceRoute;

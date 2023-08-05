@@ -35,3 +35,20 @@ export const validateToken = async (
     next(new Error(e));
   }
 };
+export const validateToken2 = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    let token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return next(new Error("invalid token"));
+    }
+    let decoded = checkToken(token);
+    req.body.user = [decoded];
+    next();
+  } catch (e) {
+    next(new Error(e));
+  }
+};

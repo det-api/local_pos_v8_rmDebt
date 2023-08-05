@@ -38,16 +38,16 @@ export const devicePermitHandler = async (
 };
 
 
-export const updateByDeviceHandler = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+// export const updateByDeviceHandler = (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction
+// ) => {
 
-  console.log(req.query)
+//   console.log(req.query)
 
-  console.log(req.body),
+//   console.log(req.body),
 
-  calcFuelBalance({} , {} , '')
+//   calcFuelBalance({} , {} , '')
 
-}
+// }

@@ -103,62 +103,62 @@ export const preSetDetailSale = async (
 
   let result = await new detailSaleModel(body).save();
 
-  let checkDate = await getFuelBalance({
-    stationId: result.stationDetailId,
-    createAt: result.dailyReportDate,
-  });
+  // let checkDate = await getFuelBalance({
+  //   stationId: result.stationDetailId,
+  //   createAt: result.dailyReportDate,
+  // });
 
-  let checkRpDate = await getDailyReport({
-    stationId: result.stationDetailId,
-    dateOfDay: result.dailyReportDate,
-  });
+  // let checkRpDate = await getDailyReport({
+  //   stationId: result.stationDetailId,
+  //   dateOfDay: result.dailyReportDate,
+  // });
 
-  if (checkRpDate.length == 0) {
-    await addDailyReport({
-      stationId: result.stationDetailId,
-      dateOfDay: result.dailyReportDate,
-    });
-  }
+  // if (checkRpDate.length == 0) {
+  //   await addDailyReport({
+  //     stationId: result.stationDetailId,
+  //     dateOfDay: result.dailyReportDate,
+  //   });
+  // }
 
-  if (checkDate.length == 0) {
-    let prevDate = previous(new Date(result.dailyReportDate));
+  // if (checkDate.length == 0) {
+  //   let prevDate = previous(new Date(result.dailyReportDate));
 
-    let prevResult = await getFuelBalance({
-      stationId: result.stationDetailId,
-      createAt: prevDate,
-    });
+  //   let prevResult = await getFuelBalance({
+  //     stationId: result.stationDetailId,
+  //     createAt: prevDate,
+  //   });
 
-    await Promise.all(
-      prevResult.map(async (ea) => {
-        let obj: fuelBalanceDocument;
-        if (ea.balance == 0) {
-          obj = {
-            stationId: ea.stationId,
-            fuelType: ea.fuelType,
-            capacity: ea.capacity,
-            opening: ea.opening + ea.fuelIn,
-            tankNo: ea.tankNo,
-            createAt: result?.dailyReportDate,
-            nozzles: ea.nozzles,
-            balance: ea.opening + ea.fuelIn,
-          } as fuelBalanceDocument;
-        } else {
-          obj = {
-            stationId: ea.stationId,
-            fuelType: ea.fuelType,
-            capacity: ea.capacity,
-            opening: ea.opening + ea.fuelIn - ea.cash,
-            tankNo: ea.tankNo,
-            createAt: result?.dailyReportDate,
-            nozzles: ea.nozzles,
-            balance: ea.opening + ea.fuelIn - ea.cash,
-          } as fuelBalanceDocument;
-        }
+  //   await Promise.all(
+  //     prevResult.map(async (ea) => {
+  //       let obj: fuelBalanceDocument;
+  //       if (ea.balance == 0) {
+  //         obj = {
+  //           stationId: ea.stationId,
+  //           fuelType: ea.fuelType,
+  //           capacity: ea.capacity,
+  //           opening: ea.opening + ea.fuelIn,
+  //           tankNo: ea.tankNo,
+  //           createAt: result?.dailyReportDate,
+  //           nozzles: ea.nozzles,
+  //           balance: ea.opening + ea.fuelIn,
+  //         } as fuelBalanceDocument;
+  //       } else {
+  //         obj = {
+  //           stationId: ea.stationId,
+  //           fuelType: ea.fuelType,
+  //           capacity: ea.capacity,
+  //           opening: ea.opening + ea.fuelIn - ea.cash,
+  //           tankNo: ea.tankNo,
+  //           createAt: result?.dailyReportDate,
+  //           nozzles: ea.nozzles,
+  //           balance: ea.opening + ea.fuelIn - ea.cash,
+  //         } as fuelBalanceDocument;
+  //       }
 
-        await addFuelBalance(obj);
-      })
-    );
-  }
+  //       await addFuelBalance(obj);
+  //     })
+  //   );
+  // }
 
   mqttEmitter(`detpos/local_server/preset`, nozzleNo + type + preset);
   return result;

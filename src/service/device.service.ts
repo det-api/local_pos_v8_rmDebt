@@ -45,3 +45,11 @@ export const updateDevice = async (
     throw new Error(e);
   }
 };
+
+export const countDevice = async () => {
+  try {
+    return await deviceModel.countDocuments();
+  } catch (e) {
+    throw new Error(e);
+  }
+};

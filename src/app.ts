@@ -18,6 +18,7 @@ import dailyPriceRoute from "./router/dailyPrice.routes";
 import dbConnect, { client, connect } from "./utils/connect";
 import blinkLed, { lowLed } from "./connection/ledBlink";
 import initialSetupRoute from "./router/initialSetup.routes";
+import {  rp } from "./migrations/migrator";
 
 const app = express();
 app.use(fileUpload());
@@ -96,7 +97,7 @@ app.use("/api/fuelIn", fuelInRoute);
 
 app.use("/api/daily-price", dailyPriceRoute);
 
-app.use("/api/test", localToDeviceRoute);
+// app.use("/api/test", localToDeviceRoute);
 
 // app.use("/api/customer", coustomerRoute);
 // app.use("/api/debt", debtRoute);
@@ -110,7 +111,13 @@ app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   });
 });
 
-lowLed();
+const defaultData = async () => {
+  // lowLed();
+
+  await rp();
+};
+
+defaultData();
 
 server.listen(port, () =>
   console.log(`server is running in  http://${host}:${port}`)
